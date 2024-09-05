@@ -37,7 +37,16 @@
 
                 float3 color = float3(uv.x, 0.0, uv.y);
 
+                color = uv.y;
 
+                float3 colorA = float3(0.3, 0.1, 0.9);
+                float3 colorB = float3(0.1,0.4,0.5);
+
+                //3 same ways to gradient blend two colors
+                //color = colorA * uv.x + colorB * (1-uv.x);
+                //color = colorA + (colorB - colorA) * uv.x;
+                color = lerp(colorA,colorB,uv.y);
+ 
                 return float4(color, 1.0);
             }
             ENDCG

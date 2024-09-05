@@ -51,8 +51,12 @@
                 
                 float3 color = 0.0;
 
-
-
+                //color = base + blend;
+                //color = base - blend; different then color = blend - base; Non-Communicative
+                color = base * blend;
+                color = abs(base-blend);
+                color = min(blend,base);
+                color = lerp(base,blend,0.9);
 
                 return float4(color, 1.0);
             }

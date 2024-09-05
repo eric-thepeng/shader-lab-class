@@ -52,9 +52,10 @@
 
                 float3 color = 0;
 
-                color = t1;
+                //color = t2 * (1-mask) + (t1+t2)/2 *mask;
+                color = t2 * (1-mask) + t1 *mask;
 
-                return float4(color, 1.0);
+                return float4(color * 2, 1.0);
             }
             ENDCG
         }

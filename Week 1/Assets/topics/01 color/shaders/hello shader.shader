@@ -30,7 +30,13 @@
 
             float4 frag (Interpolators i) : SV_Target
             {
-                return float4(0.95, 0.1, 0.3, 1.0);
+                // 1 is bright&white, 0 is dark&black
+                float4 stupidColor = float4(0.2, 0.5, 0.2, .5);
+                float4 smartColor = 0.1f;
+                //stupidColor = stupidColor * 2;
+                //stupidColor = stupidColor + 0.3;
+                //return stupidColor.xyzw;
+                return stupidColor;
             }
             ENDCG
         }
