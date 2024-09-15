@@ -6,11 +6,18 @@
         [NoScaleOffset] _tex2 ("texture two", 2D) = "white" {}
         [NoScaleOffset] _tex3 ("texture three", 2D) = "white" {}
         
-        _color1 ("color one", Color) = (0.7, 0.2, 0.9, 1)
-        _color2 ("color two", Color) = (0, 0.85, 0 , 1)
-        _color3 ("color two", Color) = (0.9, 0.1, 0.4, 1)
-        _color4 ("color two", Color) = (0, 0.85, 0 , 1)
-        _color5 ("color two", Color) = (0.9, 0.1, 0.4, 1)
+        //sky base color
+        //sun color
+        //sea base color
+        //sun burn color
+        
+        _cSkyBase ("sky base", Color) = (0.7, 0.2, 0.9, 1)
+        _cSunBase ("sun base", Color) = (0, 0.85, 0 , 1)
+        _cSeaBase ("sea base", Color) = (0.9, 0.1, 0.4, 1)
+        _cSunBurn ("sun burn", Color) = (0, 0.85, 0 , 1)
+        _cSkyGlow ("sky glow", Color) = (0, 0.85, 0 , 1)
+
+        //_color5 ("color five", Color) = (0.9, 0.1, 0.4, 1)
         
     }
     SubShader
@@ -28,11 +35,11 @@
             uniform sampler2D _tex2;
             uniform sampler2D _tex3;
 
-            uniform float3 _color1;
-            uniform float3 _color2;
-            uniform float3 _color3;
-            uniform float3 _color4;
-            uniform float3 _color5;
+            uniform float3 _cSkyBase;
+            uniform float3 _cSunBase;
+            uniform float3 _cSeaBase;
+            uniform float3 _cSunBurn;
+            uniform float3 _cSkyGlow;
             
             struct MeshData
             {
@@ -57,48 +64,61 @@
             float4 frag (Interpolators i) : SV_Target
             {
 
-                /*
                 float2 uv = i.uv;
+                float2 sunPos = float2(0.25,0.35);
+                float radius = 0.06f;
+                float seaLevel = 0.2f;
 
-                // sample the color data from each of the three textures and store them in float3 variables
-                float3 t1 = tex2D(_tex1, uv).rgb;
-                float3 t2 = tex2D(_tex2, uv).rgb;
-                float3 mask = tex2D(_tex3, uv).rgb;
-
-                float3 color = 0;
-
-                //color = t2 * (1-mask) + (t1+t2)/2 *mask;
-                color = t2 * (1-mask) + t1 *mask;
-
-                //return float4(color * 2, 1.0);*/
-
-                /* Statement:
-                 * 
-                 */
-
-                float2 uv = i.uv;
-                float2 sunPos = float2(0.4,0.3);
-                float radius = 0.1f;
-                
-                if(pow(uv.x - sunPos.x,2) + pow(uv.y - sunPos.y,2) < pow(radius,2)) //sun
+                //SUN
+                if(pow(uv.x - sunPos.x,2) + pow(uv.y - sunPos.y,2) < pow(radius,2)) 
                 {
                     float weight = 1 - ((pow(uv.x - sunPos.x,2) + pow(uv.y - sunPos.y,2)) / pow(radius,2)) * 0.9;
-                    return float4( _color1,1) *weight + float4( _color2,1) *(1-weight) ;
+                    return float4( _cSunBase,1) *weight + float4( _cSunBurn,1) *(1-weight) ;
                 }
-                else //background
+
+                //SKY
+                else if(uv.y >= (0.015 * sin(50 * uv.x) + seaLevel))
                 {
-                    float3 color = (
-                        0.2 * _color1
-                        + _color2 * sin(uv.x)/10 * abs(uv.y - sunPos.y) * 2
-                        + _color3 * (uv.y)
+                    float3 color = (0
+                        + _cSkyBase * 0.4
+                        //+ _cSunBurn * lerp(0, 1, (uv.y-seaLevel)/(1-uv.y)) * 0.2
+                        
+                        //Sun burn around the sun
+                        + _cSunBurn * lerp(0, 1, 1 - clamp( sqrt(pow(uv.x - sunPos.x,2) + pow(uv.y - sunPos.y,2)) / (radius * 7) - 0.5 , 0, 1  ))
                         );
+
+                    //A sky glow stripe
+                    color += _cSkyGlow *  (1 - clamp(abs(uv.y - (0.1 * sin(5 * uv.x) + 0.7)),0.1,0.3)/0.3) * 0.2;
+
+                    return float4(color,1);
+                }else
+
+                //SEA
+                {
+                    float3 color =
+                        // sea base color gradient to height
+                        _cSeaBase * lerp(0.3, 1, 1-uv.y/seaLevel) * 0.5
+
+                        // sun's base color to horizon
+                        + _cSunBase * lerp(0.3 ,1 ,uv.y/seaLevel) * 0.2
+
+                        // sun's casting to sea according to distance
+                        + _cSunBurn * lerp(0, 1, 1 - sqrt(pow(uv.x - sunPos.x,2) + pow(uv.y - sunPos.y,2)));
+                    ;
+
+                    // a strong sunburn on sea
+                    color = lerp(_cSunBase,color, clamp(sqrt(pow(uv.x - sunPos.x,2) + pow(uv.y - sunPos.y,2)) /0.25, 0 , 1 ) );
                     
                     return float4(color,1);
                 }
-
-                //sky stuffs
                 
             }
+
+            float distance()
+            {
+                return 1;
+            }
+            
             ENDCG
         }
     }
