@@ -70,18 +70,33 @@
 
                 //ASSIGNMENT
 
+                float4 color1 = float4(0.5,0.2,0.3,1);
+                float4 color2 = float4(0.1,0.9,0.3,1);
+                float4 colorCircle = float4(0.7,0.5,0.8,1);
                 float time = _Time.x;
                 
                 float2 uv = i.uv;
-                uv = uv * 2 -1;
+                uv = uv * 2 - 1;
+
+                float2 gridUV = frac(uv * 5) * 2 -1;
+                
+                float index = min(floor(uv.x) , floor(uv.y));
+                gridUV.x += sin(time * 10 + index/3) * 0.5;
+                gridUV.y += cos(time * 10 + index/3) * 0.5;
+
+                uv += sin(time * 5) * .5;
                 
                 float2 polarUV = float2(atan2(uv.y, uv.x),length(uv)); //atan gives a -pi to pi
                 polarUV.x = polarUV.x / 6.28 + 0.5; //range would now be 0 to 1
+                
                 polarUV.x = frac(polarUV.x + sin(time*10));
 
-                float output = polarUV.x;
-                //return float4(0.5,0.2,0.3,1);
-                return lerp(float4(0.5,0.2,0.3,1), float4(0.1,0.9,0.3,1),output);
+                // size changes with 1. how close it is to the line 2. some time variation
+                float circleSize =  (sin(time * 10)+2)/2 * min(polarUV.x, 1-polarUV.x) * 0.8;
+                //float circleSize = 0.5;
+                float circle = 1-step(circleSize,length(gridUV));
+
+                return lerp(color1, color2, polarUV.x) + lerp(0,colorCircle * circle,min(polarUV.x, 1-polarUV.x) * 2);
                 
             }
             ENDCG

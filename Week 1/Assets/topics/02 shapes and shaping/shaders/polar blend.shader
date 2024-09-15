@@ -42,7 +42,7 @@
             float4 frag (Interpolators i) : SV_Target
             {
                 float2 uv = i.uv * 2.0 - 1.0;
-                float2 outUV = frac(uv * 30);
+                float2 outUV = frac(uv * 10);
 
                 float2 polarUV = float2(atan2(uv.y,uv.x),length(uv));
                 polarUV.x = (polarUV.x / TAU) + 0.5;
