@@ -5,6 +5,12 @@
         _hour ("hour", float) = 0
         _minute ("minute", float) = 0
         _second ("second", float) = 0
+        _circleCor ("circle color", Color) = (1,1,1,1)
+        _bgCor1 ("bg color 1", Color) = (1,1,1,1)
+        _bgCor2 ("bg color 2", Color) = (1,1,1,1)
+        _secondCor ("second cor", Color) = (1,1,1,1)
+        _minuteCor ("minute cor", Color) = (1,1,1,1)
+        _emptyCor ("empty cor", Color) = (1,1,1,1)
     }
 
     SubShader
@@ -23,6 +29,12 @@
             float _hour;
             float _minute;
             float _second;
+            float3 _circleCor;
+            float3 _bgCor1;
+            float3 _bgCor2;
+            float3 _secondCor;
+            float3 _minuteCor;
+            float3 _emptyCor;
 
             struct MeshData
             {
@@ -69,26 +81,30 @@
                 float3 color = float3(0,0,0);
                 
                 // radius of 12 circle loop 
-                float loopRadius = 0.63;
+                float loopRadius = 0.61;
                 float circleRadius = 0.13  + sin(time)/200; // Radius of each individual circle
 
                 // 12 circles one by one
                 for (int hour = 0; hour < 12; hour++)
                 {
-                    // Calculate the angular position for each hour (evenly spaced around the clock)
+                    // angular position for each hour
                     float angle = (float)-hour / 12.0 * TAU; // Angle in radians for each circle
                     float2 center;
-                    if(hour == floor((_hour +9) % 12))
+                    if(hour == floor((_hour +9) % 12)) // moving ones
                     {
-                        center = float2(cos(angle), sin(angle)) * (loopRadius+cos(time)/8); // hour indicatino, Polar to Cartesian for center
+                        circleRadius = 0.13;
+                        center = float2(cos(angle), sin(angle)) * (loopRadius * 0.8 +cos(time)/8); // hour indicatino, Polar to Cartesian for center
                     }else
                     {
                         center = float2(cos(angle), sin(angle)) * (loopRadius); // not moving ones
                     }
 
                     // Add the circle color contribution
-                    color += Circle(centerUV, center, circleRadius) * float3(1, 1, 1); // White circles
+                    color += Circle(centerUV, center, circleRadius) * _circleCor * lerp(0.7,1, distance(centerUV, center)/circleRadius); // White circles
                 }
+
+                // assign background
+                color += lerp(_bgCor1, _bgCor2, uv.x);
 
                 // warp for the seconds walls
                 float warpStength = 0.005;
@@ -122,28 +138,40 @@
                 }
                     
                 float squareWidth;
-                float3 regularColor = float3(0.9,0.3,0.2);
-                float3 secondColor = float3(0.5,0.5,0.1);
-                float3 minuteColor = float3(0.8,0.4,0.8);
                 float3 targetColor = 0;
 
-                if(index == floor(_second % 60)) //SECOND
-                {
-                    squareWidth = 1.0f;
-                    targetColor = secondColor;
-                }else if(index == floor(_minute % 60)) //MINUTE
+                if(index == floor(_minute % 60)) //MINUTE
                 {
                     squareWidth = 1.5f;
-                    targetColor = minuteColor;
+                    targetColor = _minuteCor;
+                }
+                else if(index == floor(_second % 60)) //SECOND
+                {
+                    squareWidth = 1.0f;
+                    targetColor = _secondCor;
                 }else //REGULAR
                 {
+                    float angle = frac(time * 0.1) * TAU; //* sin(time * 0.2) ;//( 0.5 + (floor(_second) % 2) *  lerp(0,0.5,frac(_second)));
+                    float3x3 rotate2D = float3x3(
+                        cos(angle),-sin(angle),0,
+                        sin(angle),cos(angle),0,
+                        0,0,1
+                    );
+                    
+
+                    grid = mul(rotate2D,float3(grid.xy,1));
+                    
                     squareWidth = .7f;
-                    targetColor = regularColor;
+                    targetColor = _emptyCor;
                 }
                 
                 if(gridCoord.x == 0 || gridCoord.x == gridDimension-1 || gridCoord.y == 0 || gridCoord.y == gridDimension -1 )
                 {
-                    color += rectangle(grid,squareWidth) * targetColor;
+                    float rec = rectangle(grid,squareWidth);
+                    if(rec != 0)
+                    {
+                        color = rec * targetColor;
+                    }
                 }
 
                 

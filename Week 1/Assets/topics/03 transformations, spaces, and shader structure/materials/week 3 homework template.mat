@@ -28,5 +28,11 @@ Material:
     - _hour: 12
     - _minute: 21.2
     - _second: 461.51
-    m_Colors: []
+    m_Colors:
+    - _bgCor1: {r: 0.5954247, g: 0.3529281, b: 0.7264151, a: 1}
+    - _bgCor2: {r: 0.32378072, g: 0.5683786, b: 0.6415094, a: 1}
+    - _circleCor: {r: 0.9934875, g: 0.7783019, b: 1, a: 1}
+    - _emptyCor: {r: 0.4537647, g: 0.9339623, b: 0.66697, a: 1}
+    - _minuteCor: {r: 0.9254902, g: 0.6515431, b: 0.45098037, a: 1}
+    - _secondCor: {r: 0.9622642, g: 0.9026643, b: 0.52198297, a: 1}
   m_BuildTextureStacks: []
