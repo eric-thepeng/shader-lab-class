@@ -25,8 +25,8 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _rotX: -0.69
-    - _rotY: -0.93
-    - _rotZ: 0.52
+    - _rotX: -1.17
+    - _rotY: -0.9
+    - _rotZ: -0.62
     m_Colors: []
   m_BuildTextureStacks: []
