@@ -4,7 +4,7 @@
     {
         _color ("color", Color) = (0, 0, 0.8, 1)
         _scale ("noise scale", Range(2, 100)) = 15.5
-        _displacement ("displacement", Range(0, 0.3)) = 0.05
+        _displacement ("displacement", Range(0, 0.3)) = 0.12
     }
     
     SubShader
