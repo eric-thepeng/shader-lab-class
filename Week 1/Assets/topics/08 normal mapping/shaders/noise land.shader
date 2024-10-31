@@ -77,6 +77,7 @@
 
             Interpolators vert (MeshData v)
             {
+                
                 Interpolators o;
                 v.vertex.xyz += v.normal.xyz * fractal_noise((v.uv * _scale)) * _displacement;
                 o.vertex = UnityObjectToClipPos(v.vertex);

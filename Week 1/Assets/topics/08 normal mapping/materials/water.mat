@@ -44,5 +44,6 @@ Material:
     - _refractionIntensity: 0.114
     - _specularContrast: 100
     - _specularIntensity: 1
-    m_Colors: []
+    m_Colors:
+    - _TintColor: {r: 0.147858, g: 0.16143614, b: 0.17610055, a: 1}
   m_BuildTextureStacks: []

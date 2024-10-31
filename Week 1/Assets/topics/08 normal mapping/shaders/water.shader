@@ -10,6 +10,7 @@
         _displacementIntensity ("displacement intensity", Range(0,1)) = 0.5
         _refractionIntensity ("refraction intensity", Range(0, 0.5)) = 0.1
         _opacity ("opacity", Range(0,1)) = 0.9
+        _TintColor ("Tint Color", Color) = (0, 0.4, 0.8, 1)
     }
     SubShader
     {
@@ -40,6 +41,7 @@
             float _displacementIntensity;
             float _refractionIntensity;
             float _opacity;
+            float4 _TintColor;
 
             struct MeshData
             {
@@ -75,6 +77,22 @@
                 float height = tex2Dlod(_displacementMap, float4(o.uv + o.uvPan.xy, 0, 0)).r;
                 v.vertex.xyz += v.normal * height * _displacementIntensity;
 
+                // Use two waves to create discotion
+                float waveFrequency1 = 1.2;  // Primary wave 
+                float waveAmplitude1 = 0.15;  
+                float waveFrequency2 = 0.5;  // Secondary wave 
+                float waveAmplitude2 = 0.1;
+                
+                float speed = _Time.x * 10;
+                
+                // Calculate distortion of two waves
+                float wave1 = sin(v.vertex.x * waveFrequency1 + speed) * waveAmplitude1;
+                float wave2 = cos(v.vertex.z * waveFrequency2 + speed * 0.7) * waveAmplitude2;
+
+                // Combine two vaves to y coord
+                v.vertex.y += wave1 + wave2;
+
+                
                 o.normal = UnityObjectToWorldNormal(v.normal);
                 o.tangent = UnityObjectToWorldNormal(v.tangent);
                 o.bitangent = cross(o.normal, o.tangent) * v.tangent.w;
@@ -82,7 +100,6 @@
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 
                 o.screenUV = ComputeGrabScreenPos(o.vertex);
-                
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 
                 return o;
@@ -128,10 +145,20 @@
                 float diffuseFalloff = max(0, dot(normal, lightDirection));
                 float specularFalloff = max(0, dot(normal, halfDirection));
 
+                // color tint
+                float normalViewDot = saturate(dot(normal, viewDirection));
+                float tintIntensity = lerp(0.1,1, normalViewDot* 1.5-0.25);
+                //float3 tintedColor = lerp(surfaceColor, _TintColor.rgb, tintIntensity);
+                surfaceColor = lerp(surfaceColor, _TintColor, tintIntensity);
+
                 float3 specular = pow(specularFalloff, _gloss * MAX_SPECULAR_POWER + 0.0001) * _gloss * lightColor;
                 float3 diffuse = diffuseFalloff * surfaceColor * lightColor;
 
                 float3 color = (diffuse * _opacity) + (background * (1 - _opacity)) + specular;
+
+
+
+                
                 return float4(color, 1);
             }
             ENDCG
