@@ -45,13 +45,13 @@
                 float2 uv = i.uv;
                 float3 color = 0;
 
-                float3x3 boxBlurKernel = float3x3(
+                float3x3 boxBlurKernel = float3x3 (
                     .11, .11, .11,
                     .11, .11, .11,
                     .11, .11, .11
                 );
 
-                float2 ts = _MainTex_TexelSize.xy;
+                float2 ts = _MainTex_TexelSize.xy; 
 
                 for(int x = -1; x <= 1; x++)
                 {

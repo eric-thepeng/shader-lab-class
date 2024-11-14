@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: dither
-  m_Shader: {fileID: 4800000, guid: 8f00947393b874e8a80e8c5be9271a9c, type: 3}
+  m_Name: hw
+  m_Shader: {fileID: 4800000, guid: ba20fc63c94c4df4fa23ca89f99f815e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -27,17 +27,11 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _ditherPattern:
-        m_Texture: {fileID: 2800000, guid: 37d69a8f7cc3e4996ac5edbc9e90b2e3, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _tex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _resolution: 512
-    - _threshold: -0.167
+    - _cubicDist: 0.24
+    - _distortion: -1
+    - _intensity: 1.524
+    - _scale: 1.29
     m_Colors: []
   m_BuildTextureStacks: []
