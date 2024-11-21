@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: intro window
-  m_Shader: {fileID: 4800000, guid: 1bef17cbbd8fc4d9ba34745039181a03, type: 3}
+  m_Name: hw 11 posterized 2
+  m_Shader: {fileID: 4800000, guid: e624b26ce52c19f46a583a927c79910d, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -25,8 +25,11 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _stencilRef: 1
+    - _diffuseLightSteps: 8
+    - _gloss: 1
+    - _specularLightSteps: 2
+    - _stencilRef: 2
     m_Colors:
-    - _colorA: {r: 1, g: 1, b: 1, a: 1}
-    - _colorB: {r: 1, g: 1, b: 1, a: 1}
+    - _ambientColor: {r: 0.7, g: 0.05, b: 0.15, a: 1}
+    - _surfaceColor: {r: 0.4, g: 0.1, b: 0.9, a: 1}
   m_BuildTextureStacks: []

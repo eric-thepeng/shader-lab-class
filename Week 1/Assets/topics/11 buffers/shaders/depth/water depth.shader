@@ -93,7 +93,10 @@
                 float2 screenUV = i.screenPos.xy / i.screenPos.w;
 
                 // intersection
+                // get depth value from depth texture
                 float depth = Linear01Depth(tex2D(_CameraDepthTexture, screenUV)).r;
+
+                // calculate depth difference
                 float depthDiff = abs((depth/_ProjectionParams.w) - i.surfZ);
                 float intersection = 1-smoothstep(0,_surfaceIntersectionSize, depthDiff);
 

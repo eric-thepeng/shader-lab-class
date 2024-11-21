@@ -27,19 +27,16 @@
                 Interpolators o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.screenPos = ComputeScreenPos(o.vertex);
-
                 return o;
             }
 
             float4 frag (Interpolators i) : SV_Target
             {
                 float3 color = 0;
-
                 float2 screenUV = i.screenPos.xy / i.screenPos.w;
-                color = tex2D(_CameraDepthTexture, screenUV);
+                color = Linear01Depth(tex2D(_CameraDepthTexture, screenUV)).rrr;
 
                 return float4(color, 1.0);
-
             }
             ENDCG
         }

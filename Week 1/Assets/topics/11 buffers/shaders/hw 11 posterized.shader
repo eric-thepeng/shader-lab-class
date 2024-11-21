@@ -1,4 +1,4 @@
-﻿Shader "examples/week 11/object"
+﻿Shader "examples/week 11/hw 11 posterized"
 {
     Properties 
     {
@@ -7,21 +7,21 @@
         _diffuseLightSteps ("diffuse light steps", Int) = 4
         _specularLightSteps ("specular light steps", Int) = 2
         _ambientColor ("ambient color", Color) = (0.7, 0.05, 0.15)
-        
         _stencilRef ("stencil reference", Int) = 1
 
     }
     SubShader
     {
-        Tags { "LightMode"="ForwardBase" "Queue" = "Geometry" }
-        
+        // this tag is required to use _LightColor0
+        Tags { "LightMode"="ForwardBase" }
+        //Tags{"Queue"="Geometry"}
         Stencil
         {
             Ref [_stencilRef]
             Comp Equal
+            
         }
         
-        // nothing new below
         Pass
         {
             CGPROGRAM
@@ -88,11 +88,9 @@
                 float3 specular = pow(specularFalloff, _gloss * MAX_SPECULAR_POWER + 0.0001) * lightColor * _gloss;
 
 
-                //
                 // posterization
                 diffuseFalloff = floor(diffuseFalloff * _diffuseLightSteps) / _diffuseLightSteps;
                 specular = floor(specular * _specularLightSteps) / _specularLightSteps;
-                //
 
 
                 float3 posterizedBlinnPhong = diffuseFalloff * _surfaceColor * lightColor + specular + _ambientColor;
@@ -102,4 +100,6 @@
             ENDCG
         }
     }
+    // need this because the Diffuse default material has a ShadowCaster pass and our shader or its fallback needs a ShadowCaster pass in order to show up in the depth texture we're getting
+    Fallback "Diffuse"
 }

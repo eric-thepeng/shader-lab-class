@@ -1,20 +1,31 @@
 ﻿Shader "examples/week 11/window"
 {
     Properties {
-        _stencilRef ("Stencil Reference", Int) = 0
+        _stencilRef ("stencil reference", Int) = 1
     }
 
     SubShader
     {
-        Tags{"Queue" = "Geometry-1"} // render before other geometry
-        ZWrite Off // disable writing to depth buffer
-        ColorMask 0 // disable writing to color buffer
+        Tags {"Queue"="Geometry-1"}
+        ZWrite Off
+        ColorMask 0
         
-        Stencil{
-            Ref [_stencilRef] // reference value for stencil buffer
-            Comp Always // always pass stencil test
-            Pass Replace // replace stencil value with reference value
-            }
+        
+        Stencil
+        {
+            // our reference > stencil buffer value
+            Ref [_stencilRef]
+            Comp Always
+//            Comp Equal
+//            Comp Greater
+//            Comp GEqual
+//            Comp Less
+//            Comp LEqual
+//            Comp NotEqual
+//            Comp Never
+            
+            Pass Replace
+        }
 
         // nothing new below
         Pass

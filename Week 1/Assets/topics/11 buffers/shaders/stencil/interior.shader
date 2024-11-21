@@ -3,20 +3,21 @@
     Properties {
         _colorA ("color a", Color) = (1, 1, 1, 1)
         _colorB ("color b", Color) = (1, 1, 1, 1)
-        _stencilRef ("Stencil Reference", Int) = 1
+        _stencilRef ("stencil reference", Int) = 1
     }
 
     SubShader
     {
         Tags { "Queue" = "Geometry" }
+        
         Cull Front
         
-        Stencil{
-            
-            Ref [_stencilRef]   // reference value for stencil buffer
-            
-            }
-
+        Stencil
+        {
+            Ref [_stencilRef]
+            Comp Equal   
+        }
+        
         // nothing new below
         Pass
         {
